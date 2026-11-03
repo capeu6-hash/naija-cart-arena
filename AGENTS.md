@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Product cost/supplier data lives in `product_private` (no RLS policies, server-only via admin client); the browser may only read `products`. Why: keeps cost prices unreadable by customers.
+- Admin access uses server-checked ADMIN_EMAIL/ADMIN_PASSWORD secrets and an HMAC token (`src/lib/admin-token.server.ts`); never put admin credentials in VITE_ vars. Why: VITE_ values ship to every visitor.
+- Orders are priced server-side and only marked paid after Paystack verify with the secret key. Why: browser totals can be forged.
