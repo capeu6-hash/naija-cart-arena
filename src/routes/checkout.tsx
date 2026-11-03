@@ -8,7 +8,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { useCart, naira } from "@/lib/cart";
 import { createOrder, verifyPayment } from "@/lib/shop.functions";
 
-const PAYSTACK_PUBLIC_KEY = import.meta.env.VITE_PAYSTACK_PUBLIC_KEY || "pk_test_3c48bdf49d8a285898bef087a9d08d5a52b347c2";
+const PAYSTACK_PUBLIC_KEY = import.meta.env["VITE_PAYSTACK_PUBLIC_KEY"] || "pk_test_3c48bdf49d8a285898bef087a9d08d5a52b347c2";
 
 declare global {
   interface Window {
@@ -48,9 +48,9 @@ function CheckoutView() {
   }, []);
 
   const pay = async () => {
-    if (!/^0\d{10}$/.test(form.phone)) return toast.error("Phone must be 11 digits, e.g. 08012345678");
-    if (form.name.trim().length < 2 || form.address.trim().length < 5) return toast.error("Please fill in your name and full address");
-    if (!window.PaystackPop) return toast.error("Paystack is still loading, try again in a moment");
+    if (!/^0\d{10}$/.test(form.phone)) { toast.error("Phone must be 11 digits, e.g. 08012345678"); return; }
+    if (form.name.trim().length < 2 || form.address.trim().length < 5) { toast.error("Please fill in your name and full address"); return; }
+    if (!window.PaystackPop) { toast.error("Paystack is still loading, try again in a moment"); return; }
     setBusy(true);
     try {
       const order = await create({

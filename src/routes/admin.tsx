@@ -92,7 +92,7 @@ function AdminView({ token, onLogout }: { token: string; onLogout: () => void })
   const showProfit = prod.cost !== "" && prod.price !== "";
 
   const submitSup = async () => {
-    if (!sup.business_name.trim()) return toast.error("Business name is required");
+    if (!sup.business_name.trim()) { toast.error("Business name is required"); return; }
     try {
       await addSup({ data: { token, ...sup } });
       setSup({ business_name: "", whatsapp: "" });
@@ -101,7 +101,7 @@ function AdminView({ token, onLogout }: { token: string; onLogout: () => void })
     } catch (e) { toast.error((e as Error).message); }
   };
   const submitProd = async () => {
-    if (!prod.name.trim() || !showProfit || price <= 0) return toast.error("Name, cost and selling price are required");
+    if (!prod.name.trim() || !showProfit || price <= 0) { toast.error("Name, cost and selling price are required"); return; }
     try {
       await addProd({ data: { token, supplier_id: prod.supplier_id || null, name: prod.name, description: prod.description, image_url: prod.image_url, cost_price_private: cost, selling_price: price, stock: Math.max(0, Math.floor(Number(prod.stock) || 0)) } });
       setProd(empty);
