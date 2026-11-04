@@ -171,13 +171,18 @@ function AdminView({ token, onLogout }: { token: string; onLogout: () => void })
 
       <div className="rounded-xl bg-card p-5 shadow">
         <h3 className="mb-3 font-bold">Orders</h3>
+        {dash.orders.some((o) => o.status === "transfer_sent") && (
+          <div className="mb-3 rounded-xl bg-primary/10 p-3 text-sm font-semibold text-primary">
+            🔔 {dash.orders.filter((o) => o.status === "transfer_sent").length} customer(s) say they've sent money — check your OPay and tap Confirm paid.
+          </div>
+        )}
         {dash.orders.length === 0 ? <p className="text-sm text-muted-foreground">No orders yet.</p> : (
           <ul className="divide-y divide-border text-sm">
             {dash.orders.map((o) => (
               <li key={o.id} className="grid gap-1 py-2 sm:grid-cols-5">
                 <span className="font-medium">{o.customer_name}</span>
                 <span>{naira(Number(o.total))}</span>
-                <span className={o.status === "paid" ? "text-success" : "text-muted-foreground"}>{o.status}</span>
+                <span className={o.status === "paid" ? "text-success" : o.status === "transfer_sent" ? "font-semibold text-primary" : "text-muted-foreground"}>{o.status === "transfer_sent" ? "Money sent — confirm" : o.status}</span>
                 <span className="text-xs text-muted-foreground">{o.order_ref ?? o.paystack_ref} · {o.phone} · {[o.region, o.town, o.state, o.country].filter(Boolean).join(", ")}{o.status !== "paid" && <ConfirmBtn token={token} id={o.id} onDone={load} />}</span>
                 <span className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleString("en-NG")}</span>
               </li>
