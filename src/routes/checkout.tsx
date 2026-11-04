@@ -5,8 +5,8 @@ import { toast } from "sonner";
 import { Minus, Plus, Copy, CheckCircle2, MessageCircle } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { useCart, naira } from "@/lib/cart";
-import { createOrder, markTransferSent } from "@/lib/shop.functions";
-import { BANK, COUNTRIES, LAGOS_AREAS, NG_STATES, WHATSAPP_NUMBER, deliveryFee } from "@/lib/delivery";
+import { createOrder, markTransferSent, getOrderStatus } from "@/lib/shop.functions";
+import { BANK, COUNTRIES, LAGOS_AREAS, NG_STATES, deliveryFee } from "@/lib/delivery";
 
 export const Route = createFileRoute("/checkout")({
   head: () => ({
@@ -25,6 +25,37 @@ export const Route = createFileRoute("/checkout")({
 type Placed = Awaited<ReturnType<typeof createOrder>>;
 const field = "w-full rounded-xl border border-input bg-background px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-ring";
 const label = "mb-1 block text-xs font-semibold text-foreground";
+
+function PaymentStatus({ ref_, total }: { ref_: string; total: number }) {
+  const check = useServerFn(getOrderStatus);
+  const [status, setStatus] = useState("transfer_sent");
+  useEffect(() => {
+    if (status === "paid") return;
+    const t = setInterval(() => {
+      check({ data: { ref: ref_ } }).then((r) => {
+        if (r.status === "paid") { setStatus("paid"); toast.success("Payment confirmed! Your order is being processed."); }
+      }).catch(() => {});
+    }, 8000);
+    return () => clearInterval(t);
+  }, [status, ref_, check]);
+  if (status === "paid")
+    return (
+      <div className="space-y-3 text-center">
+        <CheckCircle2 className="mx-auto h-14 w-14 text-success" />
+        <h1 className="text-xl font-extrabold text-success">Payment Confirmed!</h1>
+        <p className="text-sm text-muted-foreground">We received {naira(total)}. Your order is now being processed for delivery.</p>
+        <p className="text-xs text-muted-foreground">Order {ref_}</p>
+      </div>
+    );
+  return (
+    <div className="space-y-3 text-center">
+      <Loader2 className="mx-auto h-12 w-12 animate-spin text-primary" />
+      <h1 className="text-lg font-bold">Thank you! We're confirming your payment</h1>
+      <p className="text-sm text-muted-foreground">Keep this page open — it will update automatically once your transfer of {naira(total)} is confirmed.</p>
+      <p className="text-xs text-muted-foreground">Order {ref_} · save this reference</p>
+    </div>
+  );
+}
 
 function CheckoutView() {
   const { items, setQty, total: cartTotal, clear } = useCart();
@@ -70,19 +101,6 @@ function CheckoutView() {
     setStep("done");
     window.scrollTo({ top: 0 });
   };
-
-  const waText = placed
-    ? [
-        `Hello ShopArena NG, I have paid for my order ${placed.ref}.`,
-        `Name: ${f.name}`,
-        `Phone: ${f.phone}`,
-        `Products: ${placed.lines.map((l) => `${l.name} x${l.qty}`).join(", ")}`,
-        `Address: ${f.address}, ${f.region}, ${f.town}, ${f.state}, ${f.country}`,
-        `Delivery Fee: ${naira(placed.fee)}`,
-        `Total Amount Paid: ${naira(placed.total)}`,
-        `I'm attaching my payment receipt.`,
-      ].join("\n")
-    : "";
 
   const copy = (t: string) => navigator.clipboard?.writeText(t).then(() => toast.success("Copied"));
 
@@ -149,17 +167,7 @@ function CheckoutView() {
             </div>
           )}
 
-          {step === "done" && placed && (
-            <div className="space-y-4 text-center">
-              <CheckCircle2 className="mx-auto h-12 w-12 text-success" />
-              <h1 className="text-lg font-bold">Thank you! Send your payment receipt on WhatsApp to confirm your order</h1>
-              <a href={`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(waText)}`} target="_blank" rel="noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-success py-4 text-lg font-bold text-success-foreground">
-                <MessageCircle className="h-6 w-6" /> Send Receipt on WhatsApp
-              </a>
-              <p className="text-xs text-muted-foreground">Order {placed.ref}</p>
-            </div>
-          )}
+          {step === "done" && placed && <PaymentStatus ref_={placed.ref} total={placed.total} />}
         </section>
 
         <aside className="order-1 h-fit rounded-2xl bg-card p-5 shadow-sm md:sticky md:top-20 md:order-2">
