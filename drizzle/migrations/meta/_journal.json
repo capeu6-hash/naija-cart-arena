@@ -15,6 +15,13 @@
       "when": 1793781974332,
       "tag": "0001_public_products_view",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793787164707,
+      "tag": "0002_bank_transfer_delivery",
+      "breakpoints": true
     }
   ]
 }
