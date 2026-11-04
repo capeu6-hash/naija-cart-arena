@@ -1,8 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Minus, Plus, Copy, CheckCircle2, MessageCircle } from "lucide-react";
+import { Minus, Plus, Copy, CheckCircle2, Loader2 } from "lucide-react";
 import { SiteHeader } from "@/components/SiteHeader";
 import { useCart, naira } from "@/lib/cart";
 import { createOrder, markTransferSent, getOrderStatus } from "@/lib/shop.functions";
