@@ -81,7 +81,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "ShopArena NG" },
-      { name: "description", content: "ShopArena NG — shop online in Nigeria with secure Paystack checkout." },
+      { name: "description", content: "ShopArena NG — shop online in Nigeria and pay by bank transfer." },
     ],
     links: [
       {

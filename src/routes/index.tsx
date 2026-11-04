@@ -21,9 +21,9 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "ShopArena NG — Shop with fast Lagos delivery" },
-      { name: "description", content: "Shop quality products in Nigeria with 24-48hr Lagos delivery and secure Paystack payment." },
+      { name: "description", content: "Shop quality products in Nigeria with 24-48hr Lagos delivery and simple bank transfer payment." },
       { property: "og:title", content: "ShopArena NG — Shop with fast Lagos delivery" },
-      { property: "og:description", content: "Quality products, 24-48hr Lagos delivery, secure Paystack checkout." },
+      { property: "og:description", content: "Quality products, 24-48hr Lagos delivery, pay by bank transfer." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],

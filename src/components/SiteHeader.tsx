@@ -22,7 +22,7 @@ export function SiteHeader() {
         </div>
       </header>
       <div className="bg-success px-4 py-2 text-center text-xs font-medium text-success-foreground sm:text-sm">
-        Delivery in Lagos 24-48hrs · Pay securely with Paystack
+        Delivery in Lagos 24-48hrs · Pay by bank transfer
       </div>
     </>
   );
