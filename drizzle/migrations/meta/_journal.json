@@ -8,6 +8,13 @@
       "when": 1793747089348,
       "tag": "0000_shoparena_schema",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1793781974332,
+      "tag": "0001_public_products_view",
+      "breakpoints": true
     }
   ]
 }

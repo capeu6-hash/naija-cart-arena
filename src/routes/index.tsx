@@ -9,11 +9,11 @@ export const productsQuery = queryOptions({
   queryKey: ["products"],
   queryFn: async () => {
     const { data, error } = await supabase
-      .from("products")
+      .from("public_products")
       .select("id, name, description, image_url, selling_price, stock")
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return data;
+    return (data ?? []).map((p) => ({ ...p, id: p.id!, name: p.name ?? "", selling_price: Number(p.selling_price ?? 0), stock: p.stock ?? 0 }));
   },
 });
 
