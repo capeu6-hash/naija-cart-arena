@@ -9,9 +9,11 @@ export const adminLogin = createServerFn({ method: "POST" })
   )
   .handler(async ({ data }) => {
     const { signAdminToken } = await import("./admin-token.server");
-    const okEmail = data.email.trim().toLowerCase() === (process.env["ADMIN_EMAIL"] ?? "").toLowerCase();
-    const okPass = data.password === process.env["ADMIN_PASSWORD"];
-    if (!okEmail || !okPass || !process.env["ADMIN_PASSWORD"]) return { ok: false as const };
+    const envEmail = (process.env["ADMIN_EMAIL"] ?? "").trim().toLowerCase();
+    const envPass = (process.env["ADMIN_PASSWORD"] ?? "").trim();
+    const okEmail = !!envEmail && data.email.trim().toLowerCase() === envEmail;
+    const okPass = !!envPass && data.password.trim() === envPass;
+    if (!okEmail || !okPass) return { ok: false as const };
     return { ok: true as const, token: await signAdminToken() };
   });
 
