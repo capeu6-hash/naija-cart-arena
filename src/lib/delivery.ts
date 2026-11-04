@@ -22,5 +22,5 @@ export function deliveryFee(country: string, state: string, region: string): num
   return 5500;
 }
 
-// Payment details shown to customers. accountNumber still needs the real value.
-export const BANK = { name: "OPay", accountName: "Chukwuemeka Columbus", accountNumber: "0000000000" };
+// Payment details shown to customers.
+export const BANK = { name: "OPay", accountName: "Chukwuemeka Columbus", accountNumber: "8089778840" };
