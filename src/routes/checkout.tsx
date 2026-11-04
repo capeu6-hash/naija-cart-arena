@@ -73,12 +73,12 @@ function CheckoutView() {
   const grand = placed?.total ?? subtotal + fee;
   const summary = placed?.lines ?? items.map((i) => ({ name: i.name, qty: i.qty, price: i.selling_price }));
 
-  const submit = async (): Promise<unknown> => {
-    if (f.name.trim().length < 2) return toast.error("Enter your full name");
-    if (!/^\+?\d{10,15}$/.test(f.phone)) return toast.error("Enter a valid phone / WhatsApp number");
-    if (f.email && !/^\S+@\S+\.\S+$/.test(f.email)) return toast.error("Email looks wrong");
-    if (f.state.trim().length < 2 || f.town.trim().length < 2 || f.region.trim().length < 2) return toast.error("Fill in state, town and area");
-    if (f.address.trim().length < 10) return toast.error("Enter your detailed home address");
+  const submit = async (): Promise<void> => {
+    if (f.name.trim().length < 2) { toast.error("Enter your full name"); return; }
+    if (!/^\+?\d{10,15}$/.test(f.phone)) { toast.error("Enter a valid phone / WhatsApp number"); return; }
+    if (f.email && !/^\S+@\S+\.\S+$/.test(f.email)) { toast.error("Email looks wrong"); return; }
+    if (f.state.trim().length < 2 || f.town.trim().length < 2 || f.region.trim().length < 2) { toast.error("Fill in state, town and area"); return; }
+    if (f.address.trim().length < 10) { toast.error("Enter your detailed home address"); return; }
     setBusy(true);
     try {
       const o = await create({ data: { customer_name: f.name, customer_email: f.email, phone: f.phone, country: f.country, state: f.state, town: f.town, region: f.region, address: f.address, items: items.map((i) => ({ id: i.id, qty: i.qty })) } });
