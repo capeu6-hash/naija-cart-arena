@@ -60,3 +60,12 @@ export const markTransferSent = createServerFn({ method: "POST" })
     await supabaseAdmin.from("orders").update({ status: "transfer_sent" }).eq("order_ref", data.ref).eq("status", "awaiting_transfer");
     return { ok: true };
   });
+
+// Public status check by order reference (refs are random, unguessable).
+export const getOrderStatus = createServerFn({ method: "GET" })
+  .inputValidator((d: { ref: string }) => z.object({ ref: z.string().min(5).max(40) }).parse(d))
+  .handler(async ({ data }) => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: o } = await supabaseAdmin.from("orders").select("status").eq("order_ref", data.ref).maybeSingle();
+    return { status: (o?.status as string | undefined) ?? "unknown" };
+  });

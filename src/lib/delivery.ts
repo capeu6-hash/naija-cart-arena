@@ -22,6 +22,5 @@ export function deliveryFee(country: string, state: string, region: string): num
   return 5500;
 }
 
-// Payment details shown to customers. Replace with real values.
-export const BANK = { name: "OPay", accountName: "ShopArena NG", accountNumber: "0000000000" };
-export const WHATSAPP_NUMBER = "2348000000000";
+// Payment details shown to customers. accountNumber still needs the real value.
+export const BANK = { name: "OPay", accountName: "Chukwuemeka Columbus", accountNumber: "0000000000" };
