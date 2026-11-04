@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
+import { SalesAnalytics } from "@/components/SalesAnalytics";
 import { naira } from "@/lib/cart";
 import { adminLogin, getAdminDashboard, addSupplier, addProduct, confirmOrderPaid } from "@/lib/admin.functions";
 
@@ -122,6 +123,8 @@ function AdminView({ token, onLogout }: { token: string; onLogout: () => void })
         </div>
         <button onClick={onLogout} className="rounded-lg border border-background/30 px-3 py-1 text-sm">Log out</button>
       </div>
+
+      <SalesAnalytics orders={dash.orders} />
 
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-3 rounded-xl bg-card p-5 shadow">
