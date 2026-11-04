@@ -42,7 +42,7 @@ function CheckoutView() {
   const grand = placed?.total ?? subtotal + fee;
   const summary = placed?.lines ?? items.map((i) => ({ name: i.name, qty: i.qty, price: i.selling_price }));
 
-  const submit = async () => {
+  const submit = async (): Promise<unknown> => {
     if (f.name.trim().length < 2) return toast.error("Enter your full name");
     if (!/^\+?\d{10,15}$/.test(f.phone)) return toast.error("Enter a valid phone / WhatsApp number");
     if (f.email && !/^\S+@\S+\.\S+$/.test(f.email)) return toast.error("Email looks wrong");
