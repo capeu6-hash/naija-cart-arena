@@ -11,4 +11,4 @@
 
 - Product cost/supplier data lives in `product_private` (no RLS policies, server-only via admin client); the browser may only read `products`. Why: keeps cost prices unreadable by customers.
 - Admin access uses server-checked ADMIN_EMAIL/ADMIN_PASSWORD secrets and an HMAC token (`src/lib/admin-token.server.ts`); never put admin credentials in VITE_ vars. Why: VITE_ values ship to every visitor.
-- Orders are priced server-side and only marked paid after Paystack verify with the secret key. Why: browser totals can be forged.
+- Orders (items + delivery fee from `src/lib/delivery.ts`) are priced server-side; payment is manual bank transfer and only the admin marks an order paid. Why: browser totals can be forged.

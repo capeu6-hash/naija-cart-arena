@@ -88,3 +88,22 @@ export const addProduct = createServerFn({ method: "POST" })
     if (e2) throw new Error(e2.message);
     return { ok: true };
   });
+
+// Admin confirms the bank transfer arrived: marks paid and reduces stock once.
+export const confirmOrderPaid = createServerFn({ method: "POST" })
+  .inputValidator((d: { token: string; id: string }) => z.object({ token: z.string(), id: z.string().uuid() }).parse(d))
+  .handler(async ({ data }) => {
+    const { assertAdmin } = await import("./admin-token.server");
+    await assertAdmin(data.token);
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { data: updated, error } = await supabaseAdmin.from("orders").update({ status: "paid" }).eq("id", data.id).neq("status", "paid").select("id, order_items(product_id, qty)");
+    if (error) throw new Error(error.message);
+    for (const o of updated ?? []) {
+      for (const it of o.order_items) {
+        if (!it.product_id) continue;
+        const { data: p } = await supabaseAdmin.from("products").select("stock").eq("id", it.product_id).single();
+        if (p) await supabaseAdmin.from("products").update({ stock: Math.max(0, p.stock - it.qty) }).eq("id", it.product_id);
+      }
+    }
+    return { ok: true };
+  });

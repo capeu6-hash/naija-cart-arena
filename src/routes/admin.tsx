@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 import { toast } from "sonner";
 import { SiteHeader } from "@/components/SiteHeader";
 import { naira } from "@/lib/cart";
-import { adminLogin, getAdminDashboard, addSupplier, addProduct } from "@/lib/admin.functions";
+import { adminLogin, getAdminDashboard, addSupplier, addProduct, confirmOrderPaid } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
@@ -178,7 +178,7 @@ function AdminView({ token, onLogout }: { token: string; onLogout: () => void })
                 <span className="font-medium">{o.customer_name}</span>
                 <span>{naira(Number(o.total))}</span>
                 <span className={o.status === "paid" ? "text-success" : "text-muted-foreground"}>{o.status}</span>
-                <span className="truncate text-xs text-muted-foreground">{o.paystack_ref}</span>
+                <span className="text-xs text-muted-foreground">{o.order_ref ?? o.paystack_ref} · {o.phone} · {[o.region, o.town, o.state, o.country].filter(Boolean).join(", ")}{o.status !== "paid" && <ConfirmBtn token={token} id={o.id} onDone={load} />}</span>
                 <span className="text-xs text-muted-foreground">{new Date(o.created_at).toLocaleString("en-NG")}</span>
               </li>
             ))}
@@ -186,5 +186,14 @@ function AdminView({ token, onLogout }: { token: string; onLogout: () => void })
         )}
       </div>
     </main>
+  );
+}
+
+function ConfirmBtn({ token, id, onDone }: { token: string; id: string; onDone: () => void }) {
+  const confirm = useServerFn(confirmOrderPaid);
+  const [busy, setBusy] = useState(false);
+  return (
+    <button disabled={busy} onClick={async () => { setBusy(true); try { await confirm({ data: { token, id } }); toast.success("Marked as paid"); onDone(); } catch (e) { toast.error((e as Error).message); } finally { setBusy(false); } }}
+      className="ml-2 rounded bg-success px-2 py-0.5 font-semibold text-success-foreground disabled:opacity-50">Confirm paid</button>
   );
 }

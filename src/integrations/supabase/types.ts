@@ -72,36 +72,57 @@ export type Database = {
       orders: {
         Row: {
           address: string
+          country: string
           created_at: string
           customer_email: string | null
           customer_name: string
+          delivery_fee: number
           id: string
+          order_ref: string | null
           paystack_ref: string | null
           phone: string
+          region: string | null
+          state: string | null
           status: string
+          subtotal: number
           total: number
+          town: string | null
         }
         Insert: {
           address: string
+          country?: string
           created_at?: string
           customer_email?: string | null
           customer_name: string
+          delivery_fee?: number
           id?: string
+          order_ref?: string | null
           paystack_ref?: string | null
           phone: string
+          region?: string | null
+          state?: string | null
           status?: string
+          subtotal?: number
           total: number
+          town?: string | null
         }
         Update: {
           address?: string
+          country?: string
           created_at?: string
           customer_email?: string | null
           customer_name?: string
+          delivery_fee?: number
           id?: string
+          order_ref?: string | null
           paystack_ref?: string | null
           phone?: string
+          region?: string | null
+          state?: string | null
           status?: string
+          subtotal?: number
           total?: number
+          town?: string | null
         }
         Relationships: []
       }
