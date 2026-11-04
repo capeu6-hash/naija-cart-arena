@@ -13,7 +13,7 @@ export const productsQuery = queryOptions({
       .select("id, name, description, image_url, selling_price, stock")
       .order("created_at", { ascending: false });
     if (error) throw error;
-    return data;
+    return (data ?? []).map((p) => ({ ...p, id: p.id!, name: p.name ?? "", selling_price: Number(p.selling_price ?? 0), stock: p.stock ?? 0 }));
   },
 });
 
