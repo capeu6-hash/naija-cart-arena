@@ -9,7 +9,7 @@ export const productsQuery = queryOptions({
   queryKey: ["products"],
   queryFn: async () => {
     const { data, error } = await supabase
-      .from("products")
+      .from("public_products")
       .select("id, name, description, image_url, selling_price, stock")
       .order("created_at", { ascending: false });
     if (error) throw error;
